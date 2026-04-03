@@ -146,6 +146,33 @@ document.getElementById('btn-submit-day').addEventListener('click', async () => 
     }
 });
 
+// --- SUBMIT FUNCTION CHECK ---
+document.getElementById('btn-submit-day').addEventListener('click', async () => {
+    // Ensure you use _supabase here, not supabase
+    const { error } = await _supabase
+        .from('attendance')
+        .insert([{
+            user_name: currentUser.name,
+            employee_id: currentUser.id,
+            clock_in_time: currentUser.clockIn,
+            clock_in_coords: currentUser.clockInCoords,
+            clock_in_location_name: currentUser.clockInLoc,
+            clock_out_time: currentUser.clockOut,
+            clock_out_coords: currentUser.clockOutCoords,
+            clock_out_location_name: currentUser.clockOutLoc,
+            status: 'completed'
+        }]);
+
+    if (error) {
+        console.error("Supabase Error:", error); // Check the console for details
+        alert("Error: " + error.message);
+    } else {
+        alert("Submission Successful!");
+        localStorage.removeItem('seamex_user');
+        location.reload();
+    }
+});
+
 // --- UTILS ---
 async function getPreciseCoords() {
     return new Promise((resolve) => {
